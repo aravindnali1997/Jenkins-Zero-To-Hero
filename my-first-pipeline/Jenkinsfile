@@ -1,18 +1,20 @@
 pipeline {
     agent any
-
+    environment {
+        WORKSPACE_UNIX = "${env.WORKSPACE.replace('\\', '/')}"
+    }
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
                 script {
-                    docker.image('node:16-alpine').inside('-w /c/ProgramData/Jenkins/.jenkins/workspace/pipe') {
-                        sh 'node --version'
+                    docker.image('node:16-alpine').inside("-w /${WORKSPACE_UNIX}") {
+                        sh 'node -v'
+                        // Add other commands you want to run inside the container
                     }
                 }
             }
